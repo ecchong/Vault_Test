@@ -1,0 +1,137 @@
+[
+  {
+    "asset_type": "credential",
+    "name": "mss_eric_sys_dv",
+    "credential_type": "Vault",
+    "inputs": {
+      "vault_id": "mss_eric_sys_dv",
+      "vault_password": "12345"
+    },
+    "asset_relation": {
+      "roles": [
+        {
+          "name": "Admin",
+          "user": [
+            "admin"
+          ],
+          "team": []
+        },
+        {
+          "name": "Use",
+          "user": [],
+          "team": []
+        },
+        {
+          "name": "Read",
+          "user": [],
+          "team": []
+        }
+      ]
+    }
+  },
+  {
+    "asset_type": "credential",
+    "name": "mss_eric_sys_qa",
+    "credential_type": "Vault",
+    "inputs": {
+      "vault_id": "mss_eric_sys_qa",
+      "vault_password": "abcde"
+    },
+    "asset_relation": {
+      "roles": [
+        {
+          "name": "Admin",
+          "user": [
+            "admin"
+          ],
+          "team": []
+        },
+        {
+          "name": "Use",
+          "user": [],
+          "team": []
+        },
+        {
+          "name": "Read",
+          "user": [],
+          "team": []
+        }
+      ]
+    }
+  },
+  {
+    "asset_type": "project",
+    "name": "mss_vault_test",
+    "scm_type": "git",
+    "scm_url": "https://github.com/ecchong/Vault_Test.git",
+    "scm_clean": true,
+    "scm_delete_on_update": true,
+    "organization": "Default",
+    "scm_update_on_launch": true,
+    "asset_relation": {
+      "notification_templates_error": [],
+      "notification_templates_success": [],
+      "schedules": [],
+      "roles": [
+        {
+          "name": "Admin",
+          "user": [],
+          "team": []
+        },
+        {
+          "name": "Use",
+          "user": [],
+          "team": []
+        },
+        {
+          "name": "Update",
+          "user": [],
+          "team": []
+        },
+        {
+          "name": "Read",
+          "user": [],
+          "team": []
+        }
+      ]
+    }
+  },
+  {
+    "asset_type": "job_template",
+    "name": "mss_vault_test",
+    "inventory": "Demo Inventory",
+    "project": "mss_vault_test",
+    "playbook": "show_secret.yml",
+    "custom_virtualenv": "/var/lib/awx/venv/ansible/",
+    "asset_relation": {
+      "survey_spec": {},
+      "notification_templates_error": [],
+      "notification_templates_success": [],
+      "schedules": [],
+      "labels": [],
+      "credentials": [
+        "mss_eric_sys_dv",
+        "mss_eric_sys_qa"
+      ],
+      "roles": [
+        {
+          "name": "Admin",
+          "user": [
+            "admin"
+          ],
+          "team": []
+        },
+        {
+          "name": "Execute",
+          "user": [],
+          "team": []
+        },
+        {
+          "name": "Read",
+          "user": [],
+          "team": []
+        }
+      ]
+    }
+  }
+]

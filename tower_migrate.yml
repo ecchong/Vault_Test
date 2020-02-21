@@ -1,0 +1,47 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    src_tower_host: "{{ lookup('env','TOWER_HOSTNAME') }}"
+    src_tower_username: "{{ lookup('env','TOWER_USERNAME') }}"
+    src_tower_password: "{{ lookup('env','TOWER_PASSWORD') }}"
+
+  tasks:
+  - name: Check if Project is defined
+    set_fact:
+      tmp_project: "{{ project }}"
+    when: project != ''
+
+  - name: Check if Inventory is defined
+    set_fact:
+      tmp_inventory: "{{ inventory }}"
+    when: inventory != ''
+
+  - name: Check if Job Template is defined
+    set_fact:
+      tmp_job_template: "{{ job_template }}"
+    when: job_template != ''
+
+  - name: Check if Credential is defined
+    set_fact:
+      tmp_credential: "{{ credential }}"
+    when: credential != ''
+
+  - name: Download job template
+    tower_receive:
+      tower_host: "{{ src_tower_host }}"
+      tower_username: "{{ src_tower_username }}"
+      tower_password: "{{ src_tower_password }}"
+      validate_certs: no
+      project: "{{ tmp_project | default(omit) }}"
+      inventory: "{{ tmp_inventory | default(omit) }}"
+      job_template: "{{ tmp_job_template | default(omit) }}"
+      credential: "{{ tmp_credential | default(omit) }}"
+    register: output
+
+  - name: Write to JSON file
+    copy:
+      content: "{{ output.assets | to_nice_json }}"
+      dest: output.json

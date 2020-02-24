@@ -7,6 +7,8 @@
     src_tower_host: "{{ lookup('env','TOWER_HOSTNAME') }}"
     src_tower_username: "{{ lookup('env','TOWER_USERNAME') }}"
     src_tower_password: "{{ lookup('env','TOWER_PASSWORD') }}"
+    git_repo: "{{ lookup('env','GIT_REPO_NAME') }}"
+    git_deploy_key: "{{ lookup('env','GIT_DEPLOY_KEY') }}"
 
   tasks:
   - name: Check if Project is defined
@@ -41,7 +43,44 @@
       credential: "{{ tmp_credential | default(omit) }}"
     register: output
 
+  - name: Create .ssh directory
+    file:
+      path: .ssh
+      state: directory
+
+  - name: Stage private deploy key
+    copy:
+      content: "{{ git_deploy_key }}"
+      dest: ~/.ssh/id_rsa
+#      dest: private_deploy_key
+      mode: 0600
+
+  - command: ls -l ~/.ssh
+
+  - name: Git clone
+    git:
+      repo: "{{ git_repo }}"
+      key_file: ~/.ssh/id_rsa
+      dest: tower_migrate_templates
+      accept_hostkey: yes
+
   - name: Write to JSON file
     copy:
       content: "{{ output.assets | to_nice_json }}"
-      dest: output.json
+      dest: tower_migrate_templates/output.json
+
+  - name: Setup Git
+    shell: |
+      git config --global user.email "echong@redhat.com"
+      git config --global user.name "Eric Chong"
+
+  - name: Git commit
+    shell: |
+      git add --all && git commit -m 'Push by Ansible'
+    args:
+      chdir: tower_migrate_templates
+
+  - name: Git push
+    shell: git push
+    args:
+      chdir: tower_migrate_templates
